@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的作品集</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* CSS 變數定義 */
+    :root {
+      --bg-dark: #0a0a0a;
+      --bg-light: #1a1a1a;
+      --text-primary: #ffffff;
+      --text-secondary: #b3b3b3;
+      --accent: #808080;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Noto Serif TC', serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ===== 與 index.html 一致的頂部導航樣式 ===== */
+    nav.top-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 300;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(14,14,14,0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--text-primary); letter-spacing: 0.05em; }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; letter-spacing: 0.08em; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--text-primary); }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+    }
+
+    /* ===== 漢堡菜單 ===== */
+    .hamburger {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      width: 50px;
+      height: 50px;
+      background: var(--bg-light);
+      border: 1px solid var(--accent);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      z-index: 200;
+      transition: var(--transition);
+    }
+
+    .hamburger:hover {
+      background: var(--accent);
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text-primary);
+      transition: var(--transition);
+      display: block;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(10px, 10px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    /* ===== 側邊菜單 ===== */
+    .sidebar-menu {
+      position: fixed;
+      left: -100%;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-light) 100%);
+      backdrop-filter: blur(10px);
+      z-index: 150;
+      transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3rem;
+      padding: 4rem 2rem;
+    }
+
+    .sidebar-menu.active {
+      left: 0;
+    }
+
+    .nav-item {
+      font-size: 3rem;
+      font-weight: 300;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: var(--transition);
+      position: relative;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease;
+    }
+
+    .nav-item:hover::after {
+      width: 100%;
+    }
+
+    .nav-item:hover {
+      color: var(--accent);
+    }
+
+    /* ===== 主容器 ===== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 4rem 4rem 2rem;
+    }
+
+    /* ===== 頁頭 ===== */
+    .page-header {
+      padding: 4rem 0 3rem;
+    }
+
+    .page-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 300;
+      margin-bottom: 1rem;
+      letter-spacing: 0.02em;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 500px;
+      animation: fadeInUp 0.6s ease 0.4s both;
+    }
+
+    /* ===== 作品卡片容器 ===== */
+    .projects-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) transparent;
+      padding: 2rem 0;
+      margin: 3rem 0;
+    }
+
+    .projects-wrapper::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .projects-wrapper::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .projects-wrapper::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 3px;
+    }
+
+    .projects-wrapper::-webkit-scrollbar-thumb:hover {
+      background: var(--text-secondary);
+    }
+
+    .projects-grid {
+      display: flex;
+      gap: 2rem;
+      padding: 0.5rem;
+      flex-wrap: nowrap;
+      animation: fadeInUp 0.6s ease 0.6s both;
+    }
+
+    /* ===== 作品卡片 ===== */
+    .project-card {
+      flex: 0 0 calc(25% - 1.5rem);
+      min-width: 300px;
+      background: var(--bg-light);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 400px;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(128, 128, 128, 0.15) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      background: rgba(30, 30, 30, 0.8);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .project-card:hover::before {
+      opacity: 1;
+    }
+
+    .project-category {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 600;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 0.7s both;
+    }
+
+    .project-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      transition: var(--transition);
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 0.8s both;
+      line-height: 1.4;
+    }
+
+    .project-description {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 0.9s both;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tech-tag {
+      font-size: 0.75rem;
+      padding: 0.4rem 0.8rem;
+      background: rgba(128, 128, 128, 0.2);
+      border: 1px solid var(--accent);
+      border-radius: 2px;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 1s both;
+    }
+
+    .project-card:hover .tech-tag {
+      background: var(--accent);
+      color: var(--bg-dark);
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      transition: var(--transition);
+      opacity: 0;
+      animation: fadeInUp 0.6s ease 1.1s both;
+    }
+
+    .project-link:hover {
+      color: var(--text-primary);
+      transform: translateX(4px);
+    }
+
+    .project-link::after {
+      content: '→';
+      transition: var(--transition);
+    }
+
+    .project-link:hover::after {
+      transform: translateX(4px);
+    }
+
+    /* ===== 響應式設計 ===== */
+    @media (max-width: 1024px) {
+      .project-card {
+        flex: 0 0 calc(33.333% - 1.5rem);
+        min-width: 280px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        top: 1.5rem;
+        left: 1.5rem;
+      }
+
+      .nav-item {
+        font-size: 2rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .project-card {
+        flex: 0 0 100%;
+        min-width: unset;
+        height: auto;
+        margin-bottom: 1rem;
+      }
+
+      .projects-grid {
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      .projects-wrapper {
+        overflow-x: visible;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .page-header {
+        padding: 2rem 0 1.5rem;
+      }
+    }
+
+    /* ===== 動畫 ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ===== 頁面背景動畫 ===== */
+    .background-decoration {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.03;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .bg-circle-1 {
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      right: -100px;
+      border: 2px solid var(--accent);
+      animation-delay: 0s;
+    }
+
+    .bg-circle-2 {
+      width: 300px;
+      height: 300px;
+      bottom: -50px;
+      left: 10%;
+      border: 2px solid var(--accent);
+      animation-delay: 5s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      50% {
+        transform: translateY(30px) rotate(180deg);
+      }
+    }
+
+    /* ===== 遮罩層 ===== */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 140;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      pointer-events: none;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* ===== 內容層 ===== */
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 3rem 0;
+      margin-top: 5rem;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      animation: fadeIn 0.8s ease 1.2s both;
+    }
+
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ===== 滾動提示 ===== */
+    .scroll-hint {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      animation: fadeIn 0.6s ease 1.5s both;
+    }
+
+    .scroll-hint::after {
+      content: '→';
+      display: inline-block;
+      animation: slideRight 1.2s ease-in-out infinite;
+    }
+
+    @keyframes slideRight {
+      0%, 100% {
+        transform: translateX(0);
+      }
+      50% {
+        transform: translateX(4px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .scroll-hint {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="nav-logo">YourName</div>
+    <ul class="nav-links">
+      <li><a href="index.html">首頁</a></li>
+      <li><a href="#about">關於</a></li>
+      <li><a href="#cv">CV</a></li>
+      <li><a href="projects.html">作品</a></li>
+      <li><a href="#contact">接案</a></li>
+    </ul>
+  </nav>
+  <div class="background-decoration" style="z-index:0;">
+    <div class="bg-circle bg-circle-1"></div>
+    <div class="bg-circle bg-circle-2"></div>
+  </div>
+
+  <!-- 為避免內容被固定的頂部導航遮蔽，增加間距 -->
+  <div style="height:72px;"></div>
+
+  <main>
+    <div class="container">
+      <!-- 頁頭 -->
+      <header class="page-header">
+        <h1 class="page-title">我的作品集</h1>
+        <p class="page-subtitle">探索我最近完成的項目，每一個都代表著我對設計與開發的熱情</p>
+      </header>
+
+      <!-- 作品卡片容器 -->
+      <section class="projects-wrapper">
+        <div class="projects-grid">
+          <!-- 作品卡片 1 -->
+          <article class="project-card">
+            <div>
+              <p class="project-category">Web 應用</p>
+              <h2 class="project-title">互動式個人網站</h2>
+              <p class="project-description">
+                使用現代 HTML5、CSS3 和原生 JavaScript 打造的響應式個人作品集，包含動畫效果和平滑滾動等交互功能。
+              </p>
+              <div class="project-tech">
+                <span class="tech-tag">HTML5</span>
+                <span class="tech-tag">CSS3</span>
+                <span class="tech-tag">JavaScript</span>
+              </div>
+            </div>
+            <a href="#" class="project-link">查看項目</a>
+          </article>
+
+          <!-- 作品卡片 2 -->
+          <article class="project-card">
+            <div>
+              <p class="project-category">UI/UX 設計</p>
+              <h3 class="project-title">移動應用 UI 套件</h3>
+              <p class="project-description">
+                為初創公司設計的完整移動應用用戶界面，包括 20+ 個精心設計的組件和統一的視覺語言系統。
+              </p>
+              <div class="project-tech">
+                <span class="tech-tag">Figma</span>
+                <span class="tech-tag">UI Design</span>
+                <span class="tech-tag">Design System</span>
+              </div>
+            </div>
+            <a href="#" class="project-link">查看項目</a>
+          </article>
+
+          <!-- 作品卡片 3 -->
+          <article class="project-card">
+            <div>
+              <p class="project-category">前端開發</p>
+              <h3 class="project-title">電商平台前端</h3>
+              <p class="project-description">
+                構建高性能的電商購物平台前端，實現購物車、支付流程、用戶認證等核心功能，支持多語言。
+              </p>
+              <div class="project-tech">
+                <span class="tech-tag">React</span>
+                <span class="tech-tag">Redux</span>
+                <span class="tech-tag">Responsive</span>
+              </div>
+            </div>
+            <a href="#" class="project-link">查看項目</a>
+          </article>
+
+          <!-- 作品卡片 4 -->
+          <article class="project-card">
+            <div>
+              <p class="project-category">全棧開發</p>
+              <h3 class="project-title">實時協作文檔工具</h3>
+              <p class="project-description">
+                開發類似 Google Docs 的實時協作文檔平台，支持多用戶編輯、版本控制和實時同步功能。
+              </p>
+              <div class="project-tech">
+                <span class="tech-tag">Node.js</span>
+                <span class="tech-tag">WebSocket</span>
+                <span class="tech-tag">MongoDB</span>
+              </div>
+            </div>
+            <a href="#" class="project-link">查看項目</a>
+          </article>
+
+          <!-- 作品卡片 5 -->
+          <article class="project-card">
+            <div>
+              <p class="project-category">品牌設計</p>
+              <h3 class="project-title">科技公司品牌識別</h3>
+              <p class="project-description">
+                為新興科技公司設計完整的品牌識別系統，包括 Logo、色彩系統、字體排版和品牌指南。
+              </p>
+              <div class="project-tech">
+                <span class="tech-tag">Branding</span>
+                <span class="tech-tag">Logo Design</span>
+                <span class="tech-tag">Brand Guidelines</span>
+              </div>
+            </div>
+            <a href="#" class="project-link">查看項目</a>
+          </article>
+
+          <!-- 作品卡片 6 -->
+          <article class="project-card">
+            <div>
+              <p class="project-category">資料視覺化</p>
+              <h3 class="project-title">數據分析儀表板</h3>
+              <p class="project-description">
+                開發交互式數據分析儀表板，實時展示複雜數據集，包括圖表、表格和自定義報表生成功能。
+              </p>
+              <div class="project-tech">
+                <span class="tech-tag">D3.js</span>
+                <span class="tech-tag">Chart.js</span>
+                <span class="tech-tag">Data Viz</span>
+              </div>
+            </div>
+            <a href="#" class="project-link">查看項目</a>
+          </article>
+        </div>
+        <div class="scroll-hint">橫向滑動查看更多</div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <p>
+          © 2026 My Portfolio · Crafted with attention to detail · 
+          <a href="mailto:your@email.com" style="color: var(--accent); text-decoration: none;">
+            聯絡我
+          </a>
+        </p>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // 漢堡選單已移除（使用固定頂部導航），僅保留平滑滾動功能
+    // 平滑滾動到錨點
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        // 如果不是專案卡片的連結
+        if (!this.classList.contains('project-link')) {
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
